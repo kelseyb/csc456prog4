@@ -2,6 +2,7 @@
 #include <string>
 #include <cstdlib>
 #include <GL/glut.h>
+#include <time.h>
 
 using namespace std;
 

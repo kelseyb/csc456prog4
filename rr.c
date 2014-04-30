@@ -14,7 +14,6 @@
 #include "prog4.h"
 
 
-//ehh. figure out waiting later?
 struct process
 {
   int id, burst, time_left, start_time;//, start; //do we need start?
@@ -22,13 +21,33 @@ struct process
   int priority;
 };
 
+//also probably need a generate random process function.
+process rand_proc()
+{
+  //id gets set after this call.
+  process p;
+
+  p.state = 0;
+  p.priority = rand()%10+1;
+  p.burst = (rand()%10+1)*100;
+  p.time_left = p.burst;
+  p.start_time = (rand()%10+1)*100;
+
+  return p;
+}
+
+
+
 void priority(process p[], int proc_count, int time_segment)
 {
 int i, best, next;
 bool done = false;
 int done_count = 0;
+//do we need this v?
 int time_passed = 0;
 int total_time = 0; 
+
+srand(time(NULL)); //probably?
 
 while(!done) //or next == -1 or something.
 {
@@ -44,11 +63,13 @@ for(i=0; i<proc_count; i++) //this seems really stupid. really. stupid.
       next = 1;
     }
   }
-} //weeeell. it makes sure best is a real value?
+} 
 
+if(best != -1) //valid choice exists
+{
 for(i=0; i<proc_count; i++)
 {
-if(p[i].state == 0) //is not done
+if(p[i].state == 0 && p[i].start_time <= total_time) //is not done and has started
 {
   if(p[i].priority < p[best].priority)
     best = i;
@@ -56,19 +77,33 @@ if(p[i].state == 0) //is not done
 }
 
 //go do highest priority job
-p[best].time_left = 0;
-p[best].state = 1; //done.
-time_passed += p[i].burst;
-done_count++;
-cout << "process " << best << " is done. priority: " << p[best].priority << endl; 
+p[best].time_left = p[best].time_left - time_segment;
+
+total_time += time_segment;
+cout << "process running: " << best << " priority: " << p[best].priority << " time left: " << p[best].time_left << " sys time: " << total_time << endl;
+
+if(p[best].time_left <= 0)
+{
+  p[best].state = 1; //proc is done
+  done_count++;
+  cout << "process " << best << " is done. priority: " << p[best].priority;
+}
+
 
 if(done_count == proc_count) done = true;
+}//end if valid
+else //no valid 
+{
+  total_time += time_segment;
+  cout << "nothing ran this cycle; sys time: " << total_time << endl;
+}
+
 }//end while
 }//end priority
 
-//think we might have to import time_segment and basically
-//rewrite this almost entire code
-//yeah
+
+
+
 void shortest_job_first(process p[], int proc_count, int time_segment)
 {
 int i, best, next;
@@ -187,7 +222,17 @@ int process_scheduling()
   proc_count = 5;
   process p[5]; //can we do this? or does it have to be dynamic blah?
 
+  //randomize processes
   for(int i=0; i<proc_count; i++)
+  {
+    p[i] = rand_proc();
+    p[i].id = i;
+    cout << i << " with burst " << p[i].burst << ", priority " << p[i].priority;
+    cout << ", and start time " << p[i].start_time << endl;
+  }
+
+
+/*  for(int i=0; i<proc_count; i++)
   {
     p[i].id = i;
     p[i].state = 0; //v 200, 300, 400, b/c ts=100
@@ -206,7 +251,7 @@ int process_scheduling()
   p[1].start_time = 400;
 
   //end fake data
-
+*/
 
   //output data stats
   for(int i=0; i<proc_count; i++)
