@@ -1,8 +1,10 @@
 #include "prog4.h"
 
-int main()
+int main(int argc, char **argv)
 {
 int choice, success;
+
+glutInit(&argc, argv);
 
 while(true)
 {

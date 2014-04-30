@@ -1,3 +1,9 @@
+#include "prog4.h"
+
+//global vars
+int ScreenWidth = 900;
+int ScreenHeight = 600;
+
 // various commands to initialize OpenGL and GLUT
 void initOpenGL( void )
 {

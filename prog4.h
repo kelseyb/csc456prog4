@@ -1,13 +1,11 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
 #include <GL/glut.h>
 
 using namespace std;
 
 //Process scheduling
-//void priority(process p[], int proc_count);
-//void shortest_job_first(process p[], int proc_count, int time_segment);
-//void round_robin(process p[], int proc_count, int time_segment);
 int process_scheduling();
 
 //Memory Management
@@ -19,6 +17,12 @@ int process_scheduling();
 
 
 //GUI/GL stuff
+
+//guard against multiple inclusions
+/*
+#ifndef _Shape_H_
+#define _Shape_H_
+*/
 
 //symbolic constants
 
@@ -36,8 +40,8 @@ const float Yellow[]	= { 1.0, 1.0, 0.0 };
 const float White[]	= { 1.0, 1.0, 1.0 };
 
 //global vars
-int ScreenWidth  = 900;
-int ScreenHeight = 600;
+//int ScreenWidth  = 900;
+//int ScreenHeight = 600;
 
 //OpenGL callback function prototypes
 void display( void );
