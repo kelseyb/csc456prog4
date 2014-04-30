@@ -13,6 +13,10 @@
 
 #include "prog4.h"
 
+//file specific globals
+int current_x;
+int y_vals[] = {100, 80, 60, 40, 20}; //or something.
+
 
 struct process
 {
@@ -36,6 +40,27 @@ process rand_proc()
   return p;
 }
 
+//draw stuff function
+void update_screen(process p[], int proc_count, int time_interval, int current_process)
+{
+int i;
+
+for(i=0; i<proc_count; i++)
+{
+  if(p[i].state == 0) //not done yet, and also started.
+  {
+    if(i==current_process)
+    {
+      DrawRectangle(current_x, y_vals[i], time_interval, y_vals[i], [color]);
+    }
+    else
+    {
+      DrawLine(current_x, y_vals[i], time_interval, y_vals[i]);
+    }
+  }
+}
+
+}//end updateScreen
 
 
 void priority(process p[], int proc_count, int time_segment)
@@ -98,6 +123,9 @@ else //no valid
   cout << "nothing ran this cycle; sys time: " << total_time << endl;
 }
 
+    //update screen
+    //update_screen(p[], proc_count, time_interval, best);
+
 }//end while
 }//end priority
 
@@ -158,11 +186,18 @@ while(!done)
       total_time += time_segment;
       cout << "nothing ran this cycle; sys time: " << total_time << endl;
     }
+    
+    //update screen
+    //update_screen(p[], proc_count, time_interval, best);
+    
   }//end while
 }//end sjf
 
+
+
+
 //no need for reference
-void round_robin(process p[], int proc_count, int time_segment) //dont remember again.
+void round_robin(process p[], int proc_count, int time_segment)
 {
 int i = 0;
 int j, k;
@@ -181,15 +216,18 @@ if(p[i].state == 0 && p[i].start_time <= total_time)
   cout << "starting process " << i << "...\n";
   //cout << "start time: " << p[i].start_time
 }
-while(p[i].state == 0 && time_taken != time_segment && p[i].start_time <= total_time)
+if(p[i].start_time <= total_time)
 {
-  p[i].time_left = p[i].time_left - 1;
-  time_taken = time_taken + 1; //this seems sound?
-  if(p[i].time_left == 0)
+  while(p[i].state == 0 && time_taken != time_segment)
   {
-     p[i].state = 1;
-     cout << "process " << i << " is done!\n";
-     done_count++;
+    p[i].time_left = p[i].time_left - 1;
+    time_taken = time_taken + 1; //this seems sound?
+    if(p[i].time_left == 0)
+    {
+       p[i].state = 1;
+       cout << "process " << i << " is done!\n";
+       done_count++;
+    }
   }
 }
 if(time_taken!=0)
@@ -210,12 +248,16 @@ cout << endl;
 }
 
 
+
+
+
 int process_scheduling()
 {
   int proc_count;
   int time_segment = 100; //or what ever you want to call that.
   int total_time = 0;
 
+  current_x = 0; //or whatever initial value is.
 
   //get data from user (about processes)
   //or fake that data.
