@@ -38,5 +38,5 @@ clean:
 
 include .depend
 
-#code mostly taken from the wizard at: 
+#code mostly taken from this wizard: 
 #	stackoverflow.com/questions/2481269/how-to-make-simple-c-makefile

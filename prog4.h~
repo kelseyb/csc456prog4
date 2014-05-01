@@ -10,7 +10,7 @@ using namespace std;
 int process_scheduling();
 
 //Memory Management
-void memory_simulation();
+
 
 
 //Page Replacement

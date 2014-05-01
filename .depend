@@ -1,0 +1,7 @@
+mmu.o: mmu.cpp memory_simulation.h
+tlb.o: tlb.cpp memory_simulation.h
+memory_simulation.o: memory_simulation.cpp memory_simulation.h prog4.h
+mem_unit.o: mem_unit.cpp memory_simulation.h
+guifuncs.o: guifuncs.cpp prog4.h
+rr.o: rr.cpp prog4.h
+prog4.o: prog4.cpp prog4.h memory_simulation.h

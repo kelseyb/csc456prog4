@@ -1,0 +1,59 @@
+#include "memory_simulation.h"
+#include "prog4.h"
+
+
+
+void memory_simulation()
+{
+	bitset <32> bit_rep;
+
+	/*
+	tlb tlbuffer;
+
+	for(int i = 0; i < 20; i++)
+	{
+
+		tlbuffer.insert(make_pair(i, 7-i));
+		
+		cout << tlbuffer.retrieve(i - 1) << endl;
+	}
+	*/
+
+
+	srand(time(NULL));
+
+
+	/*
+	mem_unit memory;
+	
+	for(int i = 0; i < MEM_SIZE; i++)
+	{
+		memory.write(rand() % (int) pow(2, 8*sizeof(data)), i);
+	}
+
+
+
+	
+	for(int i = 0; i < MEM_SIZE; i++)
+	{
+		
+
+		cout << "mem addr " << i << ": " << (bitset<8*sizeof(data)>) memory.read(i) << endl;
+	}
+	*/
+
+	/*
+	mmu mmunit;
+	
+	for(int i = 0; i < MEM_SIZE; i++)
+		mmunit.retrieve(i);
+	//mmunit.print_memory();
+
+
+	mmunit.print_tlb();
+	*/
+
+
+	return;
+
+}
