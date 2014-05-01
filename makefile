@@ -4,7 +4,7 @@ CC = g++
 CFLAGS = -lglut -lGLU -lGL -lm
 
 #put source files here
-SOURCES = mmu.cpp tlb.cpp memory_simulation.cpp mem_unit.cpp guifuncs.cpp rr.cpp prog4.cpp
+SOURCES = mmu.cpp tlb.cpp memory_simulation.cpp mem_unit.cpp guifuncs.cpp rr.cpp prog4.cpp pagereplacefuncs.cpp
 
 
 #everything else should be automated; just type make

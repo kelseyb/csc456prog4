@@ -1,11 +1,16 @@
 #include "prog4.h"
 #include "memory_simulation.h"
 
+int* superargc = NULL;
+char*** superargv = NULL;
+
 int main(int argc, char **argv)
 {
 int choice, success;
+  superargv = &argv;
+  superargc = &argc;
 
-glutInit(&argc, argv);
+
 
 while(true)
 {
