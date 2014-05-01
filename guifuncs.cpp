@@ -1,8 +1,8 @@
 #include "prog4.h"
 
-//global vars
-int ScreenWidth = 900;
-int ScreenHeight = 600;
+// global vars
+int ScreenWidth = 600;
+int ScreenHeight = 300;
 
 // various commands to initialize OpenGL and GLUT
 void initOpenGL( void )
@@ -11,15 +11,15 @@ void initOpenGL( void )
 
     glutInitWindowSize( ScreenWidth, ScreenHeight );	// initial window size
     glutInitWindowPosition( 100, 50 );			// initial window  position
-    glutCreateWindow( "OpenGL Demo" );			// window title
+    glutCreateWindow( "prog4 GUI output" );			// window title
 
-    glClearColor( 0.0, 0.0, 0.0, 0.0 );			// use black for glClear command
+    glClearColor( 1.0, 1.0, 1.0, 1.0 );			// use white for glClear command
 
     // callback routines
     glutDisplayFunc( display );				// how to redisplay window
     glutReshapeFunc( reshape );				// how to resize window
-    glutKeyboardFunc( keyboard );			// how to handle key presses
-    glutMouseFunc( mouseclick );			// how to handle mouse events
+    glutKeyboardFunc( NULL );			// how to handle key presses
+    glutMouseFunc( NULL );			// how to handle mouse events
 }
 
 /******************************************************************************/
@@ -30,7 +30,7 @@ void initOpenGL( void )
 void display( void )
 {
     // clear the display
-    glClear( GL_COLOR_BUFFER_BIT );
+  glClear( GL_COLOR_BUFFER_BIT );
 
     // flush graphical output
     glFlush();
@@ -53,43 +53,6 @@ void reshape( int w, int h )
     glViewport( 0, 0, w, h );			// the same as the screen coordinates
 }
 
-/******************************************************************************/
-
-// callback function that tells OpenGL how to handle keystrokes
-void keyboard( unsigned char key, int x, int y )
-{
-    // correct for upside-down screen coordinates
-    y = ScreenHeight - y;
-    cerr << "keypress: " << key << " (" << int( key ) << ") at (" << x << "," << y << ")\n";
-
-}
-
-/******************************************************************************/
-
-// callback function for mouse button click events
-void mouseclick( int button, int state, int x, int y )
-{
-    // correct for upside-down screen coordinates
-    y = ScreenHeight - y;
-
-    // handle mouse click events
-    switch ( button )
-    {
-	case GLUT_LEFT_BUTTON:				// left button: should create objects
-	    if ( state == GLUT_DOWN )			// press
-		cerr << "mouse click: left press at    (" << x << "," << y << ")\n";
-	    else if ( state == GLUT_UP )		// release
-		cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
-	    break;
-
-	case GLUT_RIGHT_BUTTON:				// right button: should move objects
-	    if ( state == GLUT_DOWN )			// press
-		cerr << "mouse click: right press at   (" << x << "," << y << ")\n";
-	    else if ( state == GLUT_UP )		// release
-		cerr << "mouse click: right release at (" << x << "," << y << ")\n";
-	    break;
-    }
-}
 
 /******************************************************************************/
 /*                          useful graphics routines                          */
