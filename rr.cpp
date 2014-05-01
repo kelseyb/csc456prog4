@@ -40,7 +40,6 @@ process rand_proc()
   return p;
 }
 
-/*
 //draw stuff function
 void update_screen(process p[], int proc_count, int time_interval, int current_process)
 {
@@ -52,17 +51,17 @@ for(i=0; i<proc_count; i++)
   {
     if(i==current_process)
     {
-      DrawRectangle(current_x, y_vals[i], time_interval, y_vals[i], [color]);
+      DrawRectangle(current_x, y_vals[i], time_interval, y_vals[i], Green);
     }
     else
     {
-      DrawLine(current_x, y_vals[i], time_interval, y_vals[i]);
+      DrawLine(current_x, y_vals[i], time_interval, y_vals[i], Blue);
     }
   }
 }
 
 }//end updateScreen
-*/
+
 
 void priority(process p[], int proc_count, int time_segment)
 {
@@ -206,47 +205,55 @@ bool done = false;
 int done_count = 0;
 int total_time=0;
 //do while? i forget where the check happens.
+cout << "made it to rr f(x)\n";
 while(!done)
 {
-//run if not done
-int time_taken = 0;
-
-//cout << "on process " << i << endl;
-if(p[i].state == 0 && p[i].start_time <= total_time)
-{ 
-  cout << "starting process " << i << "...\n";
-  //cout << "start time: " << p[i].start_time
-}
-if(p[i].start_time <= total_time)
-{
-  while(p[i].state == 0 && time_taken != time_segment)
+  //find valid start
+  bool valid = false;
+  for(j=0; j<proc_count; j++)
   {
-    p[i].time_left = p[i].time_left - 1;
-    time_taken = time_taken + 1; //this seems sound?
-    if(p[i].time_left == 0)
-    {
-       p[i].state = 1;
-       cout << "process " << i << " is done!\n";
-       done_count++;
-    }
+    if(p[j].state == 0 && p[j].start_time <= total_time)
+      valid = true;
   }
-}
-if(time_taken!=0)
-{
-  cout << "process " << i << " went for " << time_taken << "," << p[i].time_left << " left to go.";
-  total_time += time_taken;
-  cout << " system time: " << total_time << endl;
-}
-//this logic seems fuzzy
-if(i==(proc_count-1)) i = 0;
-else i = i+1;
+  if(valid == true)
+  {
+    //this is messy- could combine.
+    if(p[i].state == 0 && p[i].start_time <= total_time)
+    { 
+      cout << "starting process " << i << "...\n";
+      p[i].time_left = p[i].time_left - time_segment;
+      total_time += time_segment;
 
-//check if done
-if(done_count == (proc_count)) done = true;
+      //update screen
+      //update_screen(p[], proc_count, time_interval, i);
 
-}
-cout << endl;
-}
+      if(p[i].time_left <= 0)
+      {
+        p[i].state = 1; 
+        cout << i << " is done!\n";
+        done_count++;
+      }
+    }
+    
+    //loop through processes. (basically, find ones that are valid, in order.)
+    if(i==(proc_count-1)) i = 0;
+    else i = i+1;
+
+    //check if done
+    if(done_count == (proc_count)) done = true;
+  }//end if valid
+  else //no valid
+  {
+    total_time += time_segment;
+    cout << "no processes ran- sys time: " << total_time << endl;
+    
+    //update screen
+    //update_screen(p[], proc_count, time_interval, -1);
+  }
+
+}//end not done loop
+  cout << endl;
+}//end round robin
 
 
 
@@ -341,5 +348,4 @@ default:
 
   }//end whiletrue
 }
-
 
