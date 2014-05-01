@@ -31,7 +31,7 @@ case 2:
   memory_simulation();
   break;
 case 3:
-
+  
   break;
 case 4:
   cout << "Exiting.\n\n";

@@ -1,31 +1,29 @@
-//to be round robin code
-//aha, nix that
-//to be rr, shortest job first, and priority
-//to display- 
-//-gantt chart of some form?
-//-order went, when done, something.
-//-average waiting time.
-//include start times
 
-//#include <iostream>
-
-//using namespace std;
 
 #include "prog4.h"
 
 //file specific globals
+//vector< vector<int> > *pointframetable;
+//vector<int> *pointreftable;
+
 int current_x;
 int y_vals[] = {100, 80, 60, 40, 20}; //or something.
 
 
 struct process
 {
-  int id, burst, time_left, start_time;//, start; //do we need start?
-  int state; //0 not started, 1 finished? or make a 'in process'?
+  int id, burst, time_left, start_time;
+  int state; 
   int priority;
 };
 
-//also probably need a generate random process function.
+//globals that shouldn't be globals
+process p[5];
+int proc_count;
+int current_process;
+int time_interval = 100;
+int time_segment = 100;
+
 process rand_proc()
 {
   //id gets set after this call.
@@ -35,31 +33,52 @@ process rand_proc()
   p.priority = rand()%10+1;
   p.burst = (rand()%10+1)*100;
   p.time_left = p.burst;
-  p.start_time = (rand()%10+1)*100;
+  p.start_time = (rand()%5+1)*100;
 
   return p;
 }
 
+void gui_draw_stuff ( void )
+{
+  glClear( GL_COLOR_BUFFER_BIT );
+
+  int i;
+
+  for(i=0; i<proc_count; i++)
+  {
+    if(p[i].state == 0) //not done yet, and also started.
+    {
+      if(i==current_process)
+      {
+        DrawRectangle(current_x, y_vals[i], time_interval/2, y_vals[i]+10, Green);
+      }
+      else
+      {
+        DrawLine(current_x, y_vals[i], time_interval/2, y_vals[i], Blue);
+      }
+    }
+  }
+
+  printf ( "\n" );
+  glFlush();
+}
+	
+
 //draw stuff function
 void update_screen(process p[], int proc_count, int time_interval, int current_process)
 {
-int i;
+  //pointframetable = &pageframetable;
+  //pointreftable = &reftable;
 
-for(i=0; i<proc_count; i++)
-{
-  if(p[i].state == 0) //not done yet, and also started.
-  {
-    if(i==current_process)
-    {
-      DrawRectangle(current_x, y_vals[i], time_interval, y_vals[i], Green);
-    }
-    else
-    {
-      DrawLine(current_x, y_vals[i], time_interval, y_vals[i], Blue);
-    }
-  }
-}
+  glutInit ( &(*superargc),(*superargv) );
+    glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
+  initOpenGL();
+  glutDisplayFunc( gui_draw_stuff );
+  glutMainLoop();
 
+  //frametable.clear();
+  //pagetable.clear();
+  //reftable.clear();
 }//end updateScreen
 
 
@@ -121,9 +140,9 @@ else //no valid
   total_time += time_segment;
   cout << "nothing ran this cycle; sys time: " << total_time << endl;
 }
-
+    current_process = best;
     //update screen
-    //update_screen(p[], proc_count, time_interval, best);
+    //update_screen(p, proc_count, time_interval, best);
 
 }//end while
 }//end priority
@@ -187,7 +206,8 @@ while(!done)
     }
     
     //update screen
-    //update_screen(p[], proc_count, time_interval, best);
+    current_process = best;
+    update_screen(p, proc_count, time_interval, best);
     
   }//end while
 }//end sjf
@@ -224,7 +244,7 @@ while(!done)
       total_time += time_segment;
 
       //update screen
-      //update_screen(p[], proc_count, time_interval, i);
+      //update_screen(p, proc_count, time_interval, i);
 
       if(p[i].time_left <= 0)
       {
@@ -247,7 +267,7 @@ while(!done)
     cout << "no processes ran- sys time: " << total_time << endl;
     
     //update screen
-    //update_screen(p[], proc_count, time_interval, -1);
+    //update_screen(p, proc_count, time_interval, -1);
   }
 
 }//end not done loop
@@ -260,9 +280,9 @@ while(!done)
 
 int process_scheduling()
 {
-  int proc_count;
-  int time_segment = 100; //or what ever you want to call that.
-  int total_time = 0;
+  //int proc_count;
+  //int time_segment = 100; //or what ever you want to call that.
+  //int total_time = 0;
 
   srand(time(NULL));
 
@@ -282,6 +302,7 @@ int process_scheduling()
     cout << ", and start time " << p[i].start_time << endl;
   }
 
+  p[2].start_time = 0;
 
 /*  for(int i=0; i<proc_count; i++)
   {
@@ -341,9 +362,6 @@ case 4:
 default:
   cout << "Invalid choice; Valid choices are 1, 2, 3, and 4.\n";
   break;
-  //round_robin(p, proc_count, time_segment);
-  //priority(p, proc_count, time_segment);
-  //shortest_job_first(p, proc_count, time_segment);
 
 }//end switch
 

@@ -5,3 +5,4 @@ mem_unit.o: mem_unit.cpp memory_simulation.h
 guifuncs.o: guifuncs.cpp prog4.h
 rr.o: rr.cpp prog4.h
 prog4.o: prog4.cpp prog4.h memory_simulation.h
+pagereplacefuncs.o: pagereplacefuncs.cpp prog4.h
