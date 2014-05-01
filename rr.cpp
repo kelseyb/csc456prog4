@@ -72,7 +72,6 @@ int done_count = 0;
 int time_passed = 0;
 int total_time = 0; 
 
-srand(time(NULL)); //probably?
 
 while(!done) //or next == -1 or something.
 {
@@ -265,6 +264,8 @@ int process_scheduling()
   int time_segment = 100; //or what ever you want to call that.
   int total_time = 0;
 
+  srand(time(NULL));
+
   current_x = 0; //or whatever initial value is.
 
   //get data from user (about processes)
@@ -304,12 +305,12 @@ int process_scheduling()
 */
 
   //output data stats
-  for(int i=0; i<proc_count; i++)
-  {
-    cout << "process: " << i << "   burst time: " << p[i].burst;
-    cout << "   start time: " << p[i].start_time << endl;
-  }
-  cout << "time segment: " << time_segment << endl;
+  // for(int i=0; i<proc_count; i++)
+  // {
+  //   cout << "process: " << i << "   burst time: " << p[i].burst;
+  //   cout << "   start time: " << p[i].start_time << endl;
+  // }
+  // cout << "time segment: " << time_segment << endl;
 
 int choice;
   while(true)
