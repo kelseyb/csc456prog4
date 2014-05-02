@@ -1,5 +1,15 @@
 #include "memory_simulation.h"
 
+///////////////////////////////////////////////////////////////////////////////
+//
+// mmu::mmu function
+//
+// author: Shaun Gruenig
+//
+// description: This constructor sets the page table base register and 
+// 		initializes all the entries to invalid. 
+//
+///////////////////////////////////////////////////////////////////////////////
 mmu::mmu()
 {
 	ptbr = PAGE_TABLE_BASE_REGISTER;
@@ -9,31 +19,32 @@ mmu::mmu()
 	num_of_pages = pow(2, 8*sizeof(address) - PAGE_SIZE);
 
 	//initialize page table in memory
-	cout << num_of_pages << endl;
+	//cout << num_of_pages << endl;
 	for(int i = 0 + ptbr; i < num_of_pages; i++)
 	{
-		memory.write(-1, i);
+		memory.write(ERROR, i);
 	}
 
 }
 
-//implementing this may not be necessary;
-//'memory' should be changed to a pointer
-//to implement this if it is neccessary
-/*
-mmu::mmu(mem_unit preexisting_mem)
-{
-	ptbr = PAGE_TABLE_BASE_REGISTER;
-	memory = &preexisting_mem;
-
-}
-*/
-
-mmu::~mmu()
-{
-
-}
-
+///////////////////////////////////////////////////////////////////////////////
+//
+// mmu::retrieve function
+//
+// author: Shaun Gruenig
+//
+// description: This function translates logical address into a physical 
+// 		address. It first breaks the logical address into a page #
+//		and offset. It then searches the TLB for the page. If it
+//		not found, it then checks the page table for the entry
+//		and inserts the found entry into the TLB before returning
+//		the physical address that is constructed from the offset
+//		and the frame that corresponds to the given page.
+//
+// parameters:  logical_addr - the logical address to translate into a 
+//				physical address
+//
+///////////////////////////////////////////////////////////////////////////////
 address mmu::retrieve(address logical_addr)
 {
 	address physical_addr;
@@ -52,27 +63,21 @@ address mmu::retrieve(address logical_addr)
 	//extract offset
 	o = logical_addr & mask;
 
-
-//test
-	cout << "logic address: " << (bitset<sizeof(data)*8>) logical_addr << "   page: " << (bitset<sizeof(data)*8>)p << "    offset: " << (bitset<sizeof(data)*PAGE_SIZE>)o << endl;
-//end test
-
-
 	//first check TLB for logical address and return
 	//corresponding physical address if found
 	f = tlbuffer.retrieve(p);
 
-//test
-	cout << "frame: " << (bitset<sizeof(data)*32>)f << "  error: " << (bitset<sizeof(data)*32>)ERROR <<  endl;
-//end test
-
+	//if the frame was found in the TLB, return
+	//the appropriate physical address
 	if(f != (frame) ERROR)
 	{
-		cout << "here " << endl;
+		cout << "TLB hit!" << endl;
 		//combine frame and offset to get address
 		physical_addr = (f << PAGE_SIZE) | o;
 		return physical_addr;
 	}
+	else
+		cout << "TLB miss!" << endl;
 
 	//otherwise, check the page table
 	f = memory.read(ptbr + p);
@@ -80,13 +85,6 @@ address mmu::retrieve(address logical_addr)
 	//combine frame and offset to get address
 	physical_addr = (f << PAGE_SIZE) | o;
 
-
-//test
-	cout << "phys. address: " << (bitset<sizeof(data)*8>) physical_addr << "   frame: " << (bitset<sizeof(data)*8>)f << "   offset: " << (bitset<sizeof(data)*PAGE_SIZE>)o << endl;
-//end test
-
-
-	
 	//return phys addr or error if phys addr doesn't exist
 	if(f != (frame) ERROR)
 	{
@@ -95,8 +93,66 @@ address mmu::retrieve(address logical_addr)
 		return physical_addr;
 	}
 	else
-		return ERROR;
+		return ERROR;	
 
-	
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// mmu::random_mem_fill function
+//
+// author: Shaun Gruenig
+//
+// description: This function random fills the attached memory block
+// 		with random values (except the page table which is filled
+//		to ensure no repeated values occur).
+//
+///////////////////////////////////////////////////////////////////////////////
+void mmu::random_mem_fill()
+{
+	int i;
+
+	//calculates number of frames
+	int end_of_page_table = pow(2, 8*sizeof(frame) - PAGE_SIZE);
+
+	for(i = 0; i < end_of_page_table; i++)
+	{
+		memory.write(end_of_page_table - 1 - i, i);
+	}
+
+	//fills memory with random data from right after page table to
+	//end of memory
+	for(i = end_of_page_table; i < MEM_SIZE; i++)
+	{
+		memory.write(rand() % (int) pow(2, 8*sizeof(data)), i);
+	}
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// mmu::print_page_table function
+//
+// author: Shaun Gruenig
+//
+// description: This function simply prints the contents of the page table.
+//
+///////////////////////////////////////////////////////////////////////////////
+void mmu::print_page_table()
+{
+	int i;
+
+	//calculates number of frames
+	int end_of_page_table = pow(2, 8*sizeof(frame) - PAGE_SIZE);
+
+	//print page table in binary form
+	for(i = 0; i < end_of_page_table; i++)
+	{
+		cout << "page " << i << ": " << 
+		(bitset<sizeof(data)*8 - PAGE_SIZE>) memory.read(i) << endl;
+	}
+
+
+
 
 }

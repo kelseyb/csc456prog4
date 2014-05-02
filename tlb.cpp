@@ -1,6 +1,15 @@
 #include "memory_simulation.h"
 
-
+///////////////////////////////////////////////////////////////////////////////
+//
+// tlb::tlb function
+//
+// author: Shaun Gruenig
+//
+// description: This constructor simply initializes the current and max size
+//		to their default values.
+//
+///////////////////////////////////////////////////////////////////////////////
 tlb::tlb()
 {
 	curr_size = 0;
@@ -9,13 +18,20 @@ tlb::tlb()
 }
 
 
-tlb::~tlb()
-{
 
-}
-
-
-
+///////////////////////////////////////////////////////////////////////////////
+//
+// tlb::insert function
+//
+// author: Shaun Gruenig
+//
+// description: This function inserts a new (page, frame) pair into the TLB.
+//		it uses a FIFO replacement scheme to replace the oldest 
+//		entries. 
+//
+// parameters:  new_entry - the new (page, frame) pair to insert into the TLB
+//
+///////////////////////////////////////////////////////////////////////////////
 bool tlb::insert(pair<page, frame> new_entry)
 {
 
@@ -45,6 +61,19 @@ bool tlb::insert(pair<page, frame> new_entry)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+//
+// tlb::retrieve function
+//
+// author: Shaun Gruenig
+//
+// description: This function checks if an entry exist in the table and 
+//		returns it if it does. Since it uses a hash map, the 
+//		values are found in constant time.
+//
+// parameters:  p - page to look up in table
+//
+///////////////////////////////////////////////////////////////////////////////
 frame tlb::retrieve(page p)
 {
 
@@ -63,12 +92,21 @@ frame tlb::retrieve(page p)
 
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
+//
+// tlb::print function
+//
+// author: Shaun Gruenig
+//
+// description: This function prints the elements of the TLB.
+//
+//
+///////////////////////////////////////////////////////////////////////////////
 void tlb::print()
 {
 	page temp;
 
-	cout << "------------------------------------------" << endl;
+	cout << "--------------TLB----------------------------" << endl;
 
 	for(int i = 0; i < curr_size; i++)
 	{
@@ -80,7 +118,7 @@ void tlb::print()
 
 	}
 	
-	cout << "------------------------------------------" << endl;
+	cout << "---------------end of TLB---------------------" << endl;
 }
 
 
