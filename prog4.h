@@ -13,6 +13,12 @@ using namespace std;
 
 //Process scheduling
 int process_scheduling();
+//void priority();
+//void shortest_job_first();
+//void round_robin();
+void gui_draw_stuff(int current_process, int total_time);
+void draw_everything(int choice);
+
 
 //Memory Management
 void memory_simulation();
