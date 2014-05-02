@@ -1,0 +1,14 @@
+#include "memory_simulation.h"
+
+process::process()
+{
+
+}
+
+
+process::~process()
+{
+
+
+}
+

@@ -1,0 +1,20 @@
+#include "memory_simulation.h"
+
+int process::next_pid;
+
+process::process()
+{
+	size = rand() % MAX_PROCESS_SIZE; //randomly generate size
+	pid = process::next_pid; //assign process ID
+	process::next_pid++; //increment value for next process
+
+}
+
+
+process::~process()
+{
+
+
+}
+
+
