@@ -32,18 +32,7 @@ process rand_proc()
   return p;
 }
 
-//process scheduling globals
-//int current_x;
-//int y_vals[] = {ScreenHeight-20, ScreenHeight-40, ScreenHeight-60, ScreenHeight-80, ScreenHeight-100}; //or something.
-//globals that shouldn't be globals
-//process p[5];
 int proc_count;
-//int current_process;
-//int time_interval = 100;
-//int time_segment = 100;
-
-//vector<vector<int>> points_to_draw;
-//vector<process_list>
 vector<int> points_to_draw;
 
 
@@ -55,7 +44,7 @@ void gui_draw_stuff ( void )
 
   int i, j, yval;
   int buffer = 100;
-  //int proc_count = 5;
+  //proc_count = 5;
   int div = 4;
   int time_interval = 100;
 
@@ -66,8 +55,8 @@ void gui_draw_stuff ( void )
   for(i=0; i<proc_count; i++)
   {
 	//make the page into a c string for gui printing
-      yval = i*20+20;
-cout << yval;
+      yval = ScreenHeight-(i*20+20);
+
       out << i;
       t = "Process " + out.str();
       f = (char*)t.c_str();
@@ -81,11 +70,11 @@ cout << yval;
   {
     for(j=0; j<proc_count; j++)
     {
-      yval = j*20+20;
+      yval = ScreenHeight-(j*20+20);
       if(points_to_draw[i] == j)
       {
         
-        DrawRectangle((i*100)/div+buffer,yval, (i*100+time_interval)/div+buffer, yval, Green);
+        DrawRectangle((i*100)/div+buffer,yval, (i*100+time_interval)/div+buffer, yval+10, Green);
       }
       else
       {
@@ -121,8 +110,7 @@ int j, k;
 bool done = false;
 int done_count = 0;
 int total_time=0;
-//do while? i forget where the check happens.
-cout << "made it to rr f(x)\n";
+
 while(!done)
 {
 glClear(GL_COLOR_BUFFER_BIT);
@@ -138,7 +126,7 @@ glClear(GL_COLOR_BUFFER_BIT);
     //this is messy- could combine.
     if(p[i].state == 0 && p[i].start_time <= total_time)
     { 
-      cout << "starting process " << i << "...\n";
+      //cout << "starting process " << i << "...\n";
       p[i].time_left = p[i].time_left - time_segment;
       total_time += time_segment;
 
@@ -150,7 +138,7 @@ glClear(GL_COLOR_BUFFER_BIT);
       if(p[i].time_left <= 0)
       {
         p[i].state = 1; 
-        cout << i << " is done!\n";
+        //cout << i << " is done!\n";
         done_count++;
       }
     }
@@ -165,7 +153,7 @@ glClear(GL_COLOR_BUFFER_BIT);
   else //no valid
   {
     total_time += time_segment;
-    cout << "no processes ran- sys time: " << total_time << endl;
+    //cout << "no processes ran- sys time: " << total_time << endl;
     
     //update screen
     //update_screen(p, proc_count, time_interval, -1);
@@ -227,13 +215,13 @@ void shortest_job_first(process p[], int proc_count, int time_segment)
       p[best].time_left = p[best].time_left - time_segment;
  
       total_time += time_segment;//p[best].burst;
-      cout << "process running: " << best << " time left: " <<p[best].time_left << " sys time: " << total_time << endl;
+      //cout << "process running: " << best << " time left: " <<p[best].time_left << " sys time: " << total_time << endl;
 
       if(p[best].time_left <= 0)
       {
         p[best].state = 1; //done.
         done_count++;
-        cout << "process " << best << " is done. burst: " << p[best].burst << endl; 
+        //cout << "process " << best << " is done. burst: " << p[best].burst << endl; 
       }
   
       if(done_count == proc_count) done = true;
@@ -241,7 +229,7 @@ void shortest_job_first(process p[], int proc_count, int time_segment)
     else //if best == -1
     {
       total_time += time_segment;
-      cout << "nothing ran this cycle; sys time: " << total_time << endl;
+      //cout << "nothing ran this cycle; sys time: " << total_time << endl;
     }
    
     //update screen
@@ -298,13 +286,13 @@ if(p[i].state == 0 && p[i].start_time <= total_time) //is not done and has start
 p[best].time_left = p[best].time_left - time_segment;
 
 total_time += time_segment;
-cout << "process running: " << best << " priority: " << p[best].priority << " time left: " << p[best].time_left << " sys time: " << total_time << endl;
+//cout << "process running: " << best << " priority: " << p[best].priority << " time left: " << p[best].time_left << " sys time: " << total_time << endl;
 
 if(p[best].time_left <= 0)
 {
   p[best].state = 1; //proc is done
   done_count++;
-  cout << "process " << best << " is done. priority: " << p[best].priority;
+  //cout << "process " << best << " is done. priority: " << p[best].priority;
 }
 
 
@@ -313,7 +301,7 @@ if(done_count == proc_count) done = true;
 else //no valid 
 {
   total_time += time_segment;
-  cout << "nothing ran this cycle; sys time: " << total_time << endl;
+  //cout << "nothing ran this cycle; sys time: " << total_time << endl;
 }
     //current_process = best;
     //update screen
@@ -359,7 +347,7 @@ void draw_everything(int choice)
 
 int process_scheduling()
 {
-  int proc_count;
+  //int proc_count;
   int time_segment = 100; //or what ever you want to call that.
   int total_time = 0;
   int choice;
@@ -371,7 +359,7 @@ int process_scheduling()
   //get data from user (about processes)
   //or fake that data.
 
-  cout << "How many processes would you like to schedule?";
+  cout << "How many processes would you like to schedule? ";
   cin >> choice;
   if(choice > 100)
   {
