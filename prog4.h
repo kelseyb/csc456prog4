@@ -24,8 +24,6 @@ void memory_simulation();
 
 //GUI/GL stuff
 
-// symbolic constants
-
 // keypresses
 const int EscapeKey = 27;
 // global vars
@@ -69,11 +67,13 @@ void lfu( int numpages, int numframes, int numref );
 void secondchance( int numpages, int numframes, int numref );
 void superclock( int numpages, int numframes, int numref );
 int minrefnum ( vector<struct virtpage> &frametable );
-int maxrefnum ( vector<struct virtpage> &frametable );
+
 int inframetable ( int findpage, vector<struct virtpage> &frametable );
-void printframetable ( vector<struct virtpage> &frametable );
+
 void fillpagetable ( vector<struct virtpage> &pagetable, int numpages );
 void fillreftable ( vector<int> &reftable, int numref, int numpages );
+
+int minrefnum2 ( vector<struct virtpage> &frametable );
 
 
 struct virtpage
@@ -81,8 +81,15 @@ struct virtpage
   int page ;
   int frame ;
   int refnum ;
+  int refnum2;
+  virtpage()
+  {
+    page = -1;
+    frame = 0;
+    refnum = 0;
+    refnum2 = 0;
+  }
 };
-
 
 
 
