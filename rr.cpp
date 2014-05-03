@@ -1,9 +1,10 @@
 #include "prog4.h"
 
 //file specific globals
-//vector< vector<int> > *pointframetable;
-//vector<int> *pointreftable;
+int proc_count;
+vector<int> points_to_draw;
 
+//structure to hold the information for a process
 struct process
 {
   int id, burst, time_left, start_time;
@@ -11,13 +12,12 @@ struct process
   int priority;
 };
 
-/*
-struct process_list
-{
-  int current;
-  bool done;
-}
-*/
+ /************************************************************************
+   Function: rand_proc
+   Author: Kelsey Bellew
+   Description: Generates a single randomized process
+   Parameters: N/A
+ ************************************************************************/
 process rand_proc()
 {
   //id gets set after this call.
@@ -32,15 +32,18 @@ process rand_proc()
   return p;
 }
 
-int proc_count;
-vector<int> points_to_draw;
 
 
+ /************************************************************************
+   Function: gui_draw_stuff
+   Author: Kelsey Bellew
+   Description: gets called after the GUI screen opens; formats words 
+       and draws out a gantt chart using information from a global vector.
+   Parameters: N/A
+ ************************************************************************/
 void gui_draw_stuff ( void )
 {
   glClear( GL_COLOR_BUFFER_BIT );
-
-  //int y_vals[] = {ScreenHeight-20, ScreenHeight-40, ScreenHeight-60, ScreenHeight-80, ScreenHeight-100};
 
   int i, j, yval;
   int buffer = 100;
@@ -87,8 +90,15 @@ void gui_draw_stuff ( void )
 }
 
 
-
-//draw stuff function
+ /************************************************************************
+   Function: update_screen
+   Author: Kelsey Bellew
+   Description: GGets called every time a scheduler algorithm is complete 
+       and has filled the clobal vector. Sets up the environment for a 
+       Glut window to open up and calles the function to draw everything. 
+       It then clears the global vector.
+   Parameters: N/A
+ ************************************************************************/
 void update_screen()
 {
   glutInit ( &(*superargc),(*superargv) );
@@ -101,9 +111,15 @@ void update_screen()
 }//end updateScreen
 
 
-
+ /************************************************************************
+   Function: round_robin
+   Author: Kelsey Bellew
+   Description: Round Robin process scheduling algorithm.
+   Parameters: p[] - array of randomized processes
+               proc_count - number of elements in the array of processes
+               time_segment - turn around time.
+ ************************************************************************/
 void round_robin(process p[], int proc_count, int time_segment)
-//void round_robin()
 {
 int i = 0;
 int j, k;
@@ -113,7 +129,7 @@ int total_time=0;
 
 while(!done)
 {
-glClear(GL_COLOR_BUFFER_BIT);
+//glClear(GL_COLOR_BUFFER_BIT);
   //find valid start
   bool valid = false;
   for(j=0; j<proc_count; j++)
@@ -130,9 +146,6 @@ glClear(GL_COLOR_BUFFER_BIT);
       p[i].time_left = p[i].time_left - time_segment;
       total_time += time_segment;
 
-      //update screen
-      //update_screen(p, proc_count, time_interval, i);
-      //gui_draw_stuff(i, total_time);
       points_to_draw.push_back(i);
 
       if(p[i].time_left <= 0)
@@ -154,10 +167,7 @@ glClear(GL_COLOR_BUFFER_BIT);
   {
     total_time += time_segment;
     //cout << "no processes ran- sys time: " << total_time << endl;
-    
-    //update screen
-    //update_screen(p, proc_count, time_interval, -1);
-    //gui_draw_stuff(-1, total_time);
+
     points_to_draw.push_back(-1);
   }
 
@@ -167,22 +177,21 @@ glClear(GL_COLOR_BUFFER_BIT);
 update_screen();
 }//end round robin
 
+
+ /************************************************************************
+   Function: shortest_job_first
+   Author: Kelsey Bellew
+   Description: Shortest Job First process scheduling algorithm.
+   Parameters: p[] - array of randomized processes
+               proc_count - number of elements in the array of processes
+               time_segment - turn around time.
+ ************************************************************************/
 void shortest_job_first(process p[], int proc_count, int time_segment)
-//void shortest_job_first()
 {
   int i, best, next;
   bool done = false;
   int done_count = 0;
   int total_time = 0;
-
-  //randomize processes
-  /*for(int i=0; i<proc_count; i++)
-  {
-    p[i] = rand_proc();
-    p[i].id = i;
-    cout << i << " with burst " << p[i].burst << ", priority " << p[i].priority;
-    cout << ", and start time " << p[i].start_time << endl;
-  }*/
 
   while(!done)
   {
@@ -232,11 +241,6 @@ void shortest_job_first(process p[], int proc_count, int time_segment)
       //cout << "nothing ran this cycle; sys time: " << total_time << endl;
     }
    
-    //update screen
-    //current_process = best;
-    //update_screen(p, proc_count, time_interval, best);
-    //gui_draw_stuff(best, total_time);    
-  
     points_to_draw.push_back(best);
 
   }//end while
@@ -244,8 +248,16 @@ void shortest_job_first(process p[], int proc_count, int time_segment)
   update_screen();
 }//end sjf
 
+
+ /************************************************************************
+   Function: priority
+   Author: Kelsey Bellew
+   Description: Priority process scheduling algorithm.
+   Parameters: p[] - array of randomized processes
+               proc_count - number of elements in the array of processes
+               time_segment - turn around time.
+ ************************************************************************/
 void priority(process p[], int proc_count, int time_segment)
-//void priority()
 {
 int i, best, next;
 bool done = false;
@@ -303,9 +315,7 @@ else //no valid
   total_time += time_segment;
   //cout << "nothing ran this cycle; sys time: " << total_time << endl;
 }
-    //current_process = best;
-    //update screen
-    //update_screen(p, proc_count, time_interval, best);
+
     points_to_draw.push_back(best);
 
 }//end while
@@ -314,50 +324,24 @@ update_screen();
 }//end priority
 
 
-/*
-//real draw stuff function
-void draw_everything(int choice)
-{
-  glutInit ( &(*superargc),(*superargv) );
-    glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
-  initOpenGL();
-  switch(choice)
-  {
-  case 1:
-    glutDisplayFunc( round_robin );
-    //round_robin(p, proc_count, time_segment);
-    //return 0;
-    break;
-  case 2:
-    glutDisplayFunc( priority );
-    //priority(p, proc_count, time_segment);
-    //return 0;
-    break;
-  case 3:
-    glutDisplayFunc( shortest_job_first );
-    //shortest_job_first(p, proc_count, time_segment); 
-    //return 0;
-    break;
-  }
 
-  glutMainLoop();
-}//end draw_everything*/
-
-
-
+ /************************************************************************
+   Function: process_scheduling
+   Author: Kelsey Bellew
+   Description: Acting main of rr.cpp. Gets called by prog4.cpp main when 
+       user chooses to simulate process scheduling. This function prints 
+       out a secondary menu asking how many processes the user would like 
+       to simulate, prints out the information reguarding those processes, 
+       and then which process simulator they would like to run.
+   Parameters: N/A
+ ************************************************************************/
 int process_scheduling()
 {
-  //int proc_count;
-  int time_segment = 100; //or what ever you want to call that.
+  int time_segment = 100; 
   int total_time = 0;
   int choice;
 
   srand(time(NULL));
-
-  //current_x = 0; //or whatever initial value is.
-
-  //get data from user (about processes)
-  //or fake that data.
 
   cout << "How many processes would you like to schedule? ";
   cin >> choice;
@@ -384,9 +368,6 @@ int process_scheduling()
     cout << ", and start time " << p[i].start_time << endl;
   }
 
-  //p[2].start_time = 0;
-
-
   while(true)
   {
     cout << "Which Process Scheduler would you like to run?\n";
@@ -396,42 +377,28 @@ int process_scheduling()
     cout << "4. I changed my mind- go back.\n";
     cin >> choice;
   
-switch(choice)
-{
-case 1:
-  round_robin(p, proc_count, time_segment);
-  return 0;
-  break;
-case 2:
-  priority(p, proc_count, time_segment);
-  return 0;
-  break;
-case 3:
-  shortest_job_first(p, proc_count, time_segment);
-  return 0;
-  break;
-case 4:
-  return 0;
-  break;
-default:
-  cout << "Invalid choice; Valid choices are 1, 2, 3, and 4.\n";
-  break;
+    switch(choice)
+    {
+      case 1:
+        round_robin(p, proc_count, time_segment);
+        return 0;
+        break;
+      case 2:
+        priority(p, proc_count, time_segment);
+        return 0;
+        break;
+      case 3:
+        shortest_job_first(p, proc_count, time_segment);
+        return 0;
+        break;
+      case 4:
+        return 0;
+        break;
+      default:
+        cout << "Invalid choice; Valid choices are 1, 2, 3, and 4.\n";
+        break;
 
-}//end switch
-
-    /*if(choice == 1 || choice == 2 || choice == 3)
-    {
-      draw_everything(choice);
-      return 0;
-    }
-    else if(choice == 4)
-    {
-      return 0;
-    }
-    else
-    {
-      cout << "Invalid choice; Valid choices are 1, 2, 3, and 4.\n";
-    }*/
+    }//end switch
   }//end whiletrue
-}
+}//end process_scheduling
 
