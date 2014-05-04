@@ -6,7 +6,7 @@
 #include <map>
 #include <queue>
 #include <cmath>
-
+#include <vector>
 #include <ctime>
 #include <stdlib.h>
 #include <bitset>
@@ -16,17 +16,15 @@ using namespace std;
 
 
 //defines//////////////////////////////////////////////////////////////////////
-//MEM_SIZE = pow(2, 8*sizeof(address)), otherwise there will
+//MEM_SIZE must equal pow(2, 8*sizeof(address)), otherwise there will
 //be seg faults or unused memory addresses; address is a 
 //typedef listed below
 #define MEM_SIZE 256 //number of memory addresses in mem_unit
-
-
+#define MAX_PROCESS_SIZE 8 //in bytes
 #define TLB_SIZE 8 //number of key-value pairs in TLB
 #define ERROR -1 //can change error in case 'address' typedef is changed
 #define PAGE_TABLE_BASE_REGISTER 0
-
-#define PAGE_SIZE 2 //in bits
+#define PAGE_SIZE 3 //in bits
 
 
 
@@ -37,10 +35,12 @@ using namespace std;
 typedef unsigned char address;
 typedef unsigned char page;
 typedef unsigned char frame;
+typedef unsigned char offset;
 
 //type of data the block of memory in mem_unit holds
 typedef unsigned char data;
 
+//note:
 //the above typdefs should stay unsigned, as the TLB uses a logical 
 //bit shift right; in other words, if it isn't unsigned, it will shift
 //in ones instead of zeros when the right bit shift operator (>>) is used,
@@ -48,11 +48,27 @@ typedef unsigned char data;
 
 
 //classes//////////////////////////////////////////////////////////////////////
+
+extern vector < pair< page, frame > > tlbvec;
+extern vector < address > ptvec;
+ 
+///////////////////////////////////////////////////////////////////////////////
+//
+// tlb class
+//
+// author: Shaun Gruenig
+//
+// description: a translation look-aside buffer class. The class allows 
+// 		new (page, frame) pairs to be inserted, and uses a FIFO
+//		replacement scheme. The class also retrieves frames for a
+//		given page.
+//
+///////////////////////////////////////////////////////////////////////////////
 class tlb
 {
 	public:
 		tlb();
-		~tlb();
+		~tlb(){};
 		bool insert(pair<page, frame> new_entry);
 		frame retrieve(page p);
 		void print();
@@ -74,32 +90,59 @@ class tlb
 
 };
 
+///////////////////////////////////////////////////////////////////////////////
+//
+// mem_unit class
+//
+// author: Shaun Gruenig
+//
+// description: a simple block of memory (of size MEM_SIZE) that can be 
+//		written to and read from. It can also print its contents.
+//
+///////////////////////////////////////////////////////////////////////////////
 class mem_unit
 {
 
 	public:
 		mem_unit();
-		~mem_unit();
+		~mem_unit(){};
 
 		bool write(data d, address addr);
 		data read(address addr);
 		void print();
 
 	private:
+		//simple array used to hold memory contents
 		data mem[MEM_SIZE];
 		
 };
 
+///////////////////////////////////////////////////////////////////////////////
+//
+// mmu class
+//
+// author: Shaun Gruenig
+//
+// description: a memory management unit class. This class translates 
+//		logical addresses into physical addresses contained in the
+// 		memory unit instantiated within this class. It also has
+//		a translation look-aside buffer which it keep the TLB_SIZE
+//		most recent pages/frames for quick access. It contains many
+//		print functions for the purpose of implementing the 
+//		simulation. 
+//
+///////////////////////////////////////////////////////////////////////////////
 class mmu
 {
 	public:
 		mmu();
-		mmu(mem_unit memory);
-		~mmu();
+		~mmu(){};
 
 		address retrieve(address logical_addr);
 		void print_memory(){memory.print();};
 		void print_tlb(){tlbuffer.print();};
+		void random_mem_fill();
+		void print_page_table();
 
 		
 
@@ -109,11 +152,10 @@ class mmu
 		int num_of_pages; 
 		//note: needs to be changed to a pointer if overloaded 
 		//constructor is required
-		mem_unit memory; 
+		mem_unit memory;
 		
 
 };
-
 
 
 #endif 

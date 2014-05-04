@@ -1,16 +1,27 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 #include <time.h>
+#include <vector>
+#include <ctime>
+#include <stdio.h> 
+#include <stdlib.h>
+#include <sstream>
 
 using namespace std;
 
 //Process scheduling
 int process_scheduling();
+//void priority();
+//void shortest_job_first();
+//void round_robin();
+void gui_draw_stuff(int current_process, int total_time);
+void draw_everything(int choice);
+
 
 //Memory Management
-
+void memory_simulation();
 
 
 //Page Replacement
@@ -19,18 +30,16 @@ int process_scheduling();
 
 //GUI/GL stuff
 
-//guard against multiple inclusions
-/*
-#ifndef _Shape_H_
-#define _Shape_H_
-*/
-
-//symbolic constants
-
-//keypresses
+// keypresses
 const int EscapeKey = 27;
+// global vars
+extern int ScreenWidth;
+extern int ScreenHeight;
 
-//colors
+extern int* superargc;
+extern char*** superargv;
+
+// colors
 const float Black[]	= { 0.0, 0.0, 0.0 };
 const float Red[]	= { 1.0, 0.0, 0.0 };
 const float Green[]	= { 0.0, 1.0, 0.0 };
@@ -40,18 +49,13 @@ const float Cyan[]	= { 0.0, 1.0, 1.0 };
 const float Yellow[]	= { 1.0, 1.0, 0.0 };
 const float White[]	= { 1.0, 1.0, 1.0 };
 
-//global vars
-//int ScreenWidth  = 900;
-//int ScreenHeight = 600;
 
-//OpenGL callback function prototypes
+// OpenGL callback function prototypes
 void display( void );
 void reshape( int w, int h );
-void keyboard( unsigned char key, int x, int y );
-void mouseclick( int button, int state, int x, int y );
-void mousedrag( int x, int y );
 
-//useful graphics function prototypes
+
+// useful graphics function prototypes
 void initOpenGL( void );
 void DrawLine( float x1, float y1, float x2, float y2, const float color[] );
 void DrawRectangle( float x1, float y1, float x2, float y2, const float color[] );
@@ -59,4 +63,39 @@ void DrawFilledRectangle( float x1, float y1, float x2, float y2, const float co
 void DrawTextString( char *string, int x, int y, const float color[] );
 
 
+/******************************************************/
+
+void pagereplace( );
+void fifo( int numpages, int numframes, int numref );
+void optimal( int numpages, int numframes, int numref );
+void lru( int numpages, int numframes, int numref );
+void lfu( int numpages, int numframes, int numref );
+void secondchance( int numpages, int numframes, int numref );
+void superclock( int numpages, int numframes, int numref );
+int minrefnum ( vector<struct virtpage> &frametable );
+
+int inframetable ( int findpage, vector<struct virtpage> &frametable );
+
+void fillpagetable ( vector<struct virtpage> &pagetable, int numpages );
+void fillreftable ( vector<int> &reftable, int numref, int numpages );
+
+int minrefnum2 ( vector<struct virtpage> &frametable );
+
+
+struct virtpage
+{
+  int page ;
+  int frame ;
+  int refnum ;
+  int refnum2;
+  virtpage()
+  {
+    page = -1;
+    frame = 0;
+    refnum = 0;
+    refnum2 = 0;
+  }
+};
+
+vector < pair<page, frame> > tlbvec;
 

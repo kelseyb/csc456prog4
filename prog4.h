@@ -97,5 +97,3 @@ struct virtpage
   }
 };
 
-
-

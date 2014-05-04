@@ -1,11 +1,18 @@
 #include "prog4.h"
 #include "memory_simulation.h"
 
+int* superargc = NULL;
+char*** superargv = NULL;
+
+vector < pair<page, frame> > tlbvec;
+
 int main(int argc, char **argv)
 {
 int choice, success;
+  superargv = &argv;
+  superargc = &argc;
 
-glutInit(&argc, argv);
+
 
 while(true)
 {
@@ -26,7 +33,7 @@ case 2:
   memory_simulation();
   break;
 case 3:
-
+  pagereplace();
   break;
 case 4:
   cout << "Exiting.\n\n";
@@ -37,7 +44,8 @@ default:
   break;
 }
 
-//clears buffer so that loop doesn't mess up when invalid input is entered
+//clears buffer so that loop doesn't go unstable 
+//when invalid input is entered
 cin.clear();
 cin.ignore(10000, '\n');
 }
